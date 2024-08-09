@@ -22,8 +22,8 @@ public class Order extends BaseModel{
     private OrderStatus orderStatus;
 
     @JsonIgnore
-    @ManyToMany(targetEntity = OrderedItem.class,
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST,
+            mappedBy = "order")
     private List<OrderedItem> orderedItems;
 }

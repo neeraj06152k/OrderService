@@ -1,24 +1,24 @@
 package dev.neeraj.orderservice.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 public class OrderedItem extends BaseModel{
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private long productId;
+    @Column(nullable = false)
+    private int quantity;
+    @Column(nullable = false)
+    private long price;
 
-    @ManyToMany(mappedBy = "orderedItems", fetch = FetchType.LAZY)
-    private List<Order> orders;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 
 }

@@ -1,5 +1,6 @@
 package dev.neeraj.orderservice.services;
 
+import dev.neeraj.orderservice.dtos.OrderAmountDTO;
 import dev.neeraj.orderservice.enums.OrderStatus;
 import dev.neeraj.orderservice.exceptions.OrderNotFoundException;
 import dev.neeraj.orderservice.models.Order;
@@ -27,17 +28,11 @@ public class OrderService implements IOrderService{
         Order newOrder = new Order();
         newOrder.setUserId(userId);
         newOrder.setOrderStatus(OrderStatus.PENDINGPAYMENT);
+        newOrder.setOrderedItems(orderedItems);
 
-        List<OrderedItem> finalOrderedItems = new ArrayList<>();
-        for (OrderedItem orderedItem : orderedItems) {
-            OrderedItem existingOrderItem =
-                    orderedItemRepository.findByProductId(orderedItem.getProductId());
-            if(existingOrderItem==null)
-                finalOrderedItems.add(orderedItemRepository.save(orderedItem));
-            else finalOrderedItems.add(existingOrderItem);
+        for(OrderedItem orderedItem: orderedItems){
+            orderedItem.setOrder(newOrder);
         }
-
-        newOrder.setOrderedItems(finalOrderedItems);
 
         newOrder = orderRepository.save(newOrder);
 
@@ -56,11 +51,23 @@ public class OrderService implements IOrderService{
         return savedOrder;
     }
 
+    @Override
     public Order updateOrderStatus(long orderId, OrderStatus newOrderStatus)
             throws OrderNotFoundException {
         Order order = getOrder(orderId);
         order.setOrderStatus(newOrderStatus);
 
         return orderRepository.save(order);
+    }
+
+    @Override
+    public OrderAmountDTO getOrderAmount(long orderId) throws OrderNotFoundException {
+        Order order = getOrder(orderId);
+        List<OrderedItem> orderedItems = order.getOrderedItems();
+        long totalAmount = 0;
+        for(OrderedItem orderedItem: orderedItems){
+            totalAmount += orderedItem.getPrice() * orderedItem.getQuantity();
+        }
+        return new OrderAmountDTO(orderId, totalAmount);
     }
 }

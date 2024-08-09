@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class ReceivedProductDTO {
     private long productId;
+    private int quantity;
+    private long price;
 }

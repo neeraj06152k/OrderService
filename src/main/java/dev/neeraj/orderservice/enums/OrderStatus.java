@@ -2,8 +2,8 @@ package dev.neeraj.orderservice.enums;
 
 public enum OrderStatus {
     PENDINGPAYMENT,
-    CONFIRMED,
-    FAILED,
+    PAYMENTCOMPLETED,
+    PAYMENTFAILED,
     PENDINGCANCELATION,
     CANCELED,
     COMPLETED
